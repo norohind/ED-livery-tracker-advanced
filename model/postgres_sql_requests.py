@@ -39,8 +39,8 @@ from
             min(timestamp) as timestamp,
             min(items_count) as items_count_new,
             action_id, 
-            lag (sum_cur_price, 1) over (order by sum_cur_price) sum_cur_price_old,
-            lag (items_count, 1) over (order by items_count) items_count_old
+            lag (sum_cur_price, 1) over (order by action_id) sum_cur_price_old,
+            lag (items_count, 1) over (order by action_id) items_count_old
         from (
                 select 
                     sum(cur_price) as sum_cur_price, 
