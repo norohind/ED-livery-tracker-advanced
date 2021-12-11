@@ -91,7 +91,7 @@ class PostgresModel(AbstractModel):
                     livery_list)
 
     @errors_catcher
-    def insert_livery_timestamp(self, livery_list: list) -> None:
+    def insert_livery_timestamp(self, livery_list: list) -> int:
         """
         Takes livery content with timestamps as list insert to DB. Helpful for historical data
 
@@ -121,6 +121,8 @@ class PostgresModel(AbstractModel):
                 cursor.executemany(
                     postgres_sql_requests.insert_livery_timestamp,
                     livery_list)
+
+        return action_id
 
     @errors_catcher
     def get_diff_action_id(self, action_id: int) -> list:
