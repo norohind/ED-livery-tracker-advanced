@@ -3,25 +3,6 @@ import json
 import falcon
 import os
 
-"""
-/leaderboard/{leaderboard_type}/platform/{platform}?[limit=<int>
-    &after=<timestamp (as "Timestamp UTC" column format)>&after=<timestamp (as "Timestamp UTC" column format)>]
-    
-leaderboard_type - one of
-    powerplay
-    cqc
-    trade
-    exploration
-    aegis
-    bgs
-    combat
-
-platform - one of
-    XBOX
-    PS4
-    PC
-"""
-
 model.open_model()
 activity_table_html_template = """<!DOCTYPE HTML>
 <html lang="en-US">
@@ -90,14 +71,6 @@ class ActivityHtml:
 
 class ActivityDiff:
     def on_get(self, req: falcon.request.Request, resp: falcon.response.Response, action_id: int) -> None:
-        """
-        Give squads tags and diff in their experience for specified action_id - 1 (smart -1)
-
-        :param action_id:
-        :param req:
-        :param resp:
-        :return:
-        """
 
         resp.content_type = falcon.MEDIA_JSON
         resp.text = json.dumps(model.get_diff_action_id(action_id))
