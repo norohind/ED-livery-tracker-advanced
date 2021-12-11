@@ -64,7 +64,8 @@ select_diff_by_action_id = """select
     new_livery.cur_price as "New Current Price",
     old_livery.orig_price as "Old Original Price",
     old_livery.cur_price as "Old Current Price",
-    new_livery.cur_price - old_livery.cur_price as "Current Price diff"
+    new_livery.cur_price - old_livery.cur_price as "Current Price diff",
+    'https://dlc.elitedangerous.com/images/med/' || coalesce(new_livery.image_url, old_livery.image_url) as "URL to image"
 from (
     select * 
     from livery 
