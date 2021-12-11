@@ -15,47 +15,56 @@ from livery
 order by action_id desc
 limit 1;"""
 
-insert_leader_board = """insert into livery (action_id, name, cur_price, orig_price, image_url) 
+insert_livery = """insert into livery (action_id, name, cur_price, orig_price, image_url) 
 values 
 (%(action_id)s, %(name)s, %(cur_price)s, %(orig_price)s, %(image)s);"""
 
-insert_leader_board_timestamp = """insert into livery (action_id, name, cur_price, orig_price, image_url, timestamp) 
+insert_livery_timestamp = """insert into livery (action_id, name, cur_price, orig_price, image_url, timestamp) 
 values 
 (%(action_id)s, %(name)s, %(cur_price)s, %(orig_price)s, %(image)s, %(timestamp)s);"""
 
 select_activity_pretty_names = """select 
-sum_score::bigint as "TotalExperience", 
 to_char(timestamp, 'YYYY-MM-DD HH24:MI:SS') as "Timestamp UTC",
 action_id::bigint as "ActionId", 
-sum_score_old::bigint as "TotalExperienceOld", 
-(sum_score - sum_score_old)::bigint as "Diff" 
+items_count_new as "New Items count",
+items_count_old as "Old Items count",
+(items_count_new - items_count_old)::bigint as "Count Diff", 
+sum_cur_price::bigint as "Sum Total",
+sum_cur_price_old::bigint as "Sum Total Old", 
+(sum_cur_price - sum_cur_price_old)::bigint as "Price Sum Diff" 
 from 
     (
         select 
-            sum_score, 
-            min(timestamp) as timestamp, 
+            sum_cur_price, 
+            min(timestamp) as timestamp,
+            min(items_count) as items_count_new,
             action_id, 
-            lag (sum_score, 1) over (order by sum_score) sum_score_old 
+            lag (sum_cur_price, 1) over (order by sum_cur_price) sum_cur_price_old,
+            lag (items_count, 1) over (order by items_count) items_count_old
         from (
-                select sum(cur_price) as sum_score, min(timestamp) as timestamp, action_id 
+                select 
+                    sum(cur_price) as sum_cur_price, 
+                    count(distinct name) as items_count, 
+                    min(timestamp) as timestamp, 
+                    action_id 
                 from livery 
                 group by action_id
              ) as foo
-    group by sum_score, action_id 
+    group by sum_cur_price, action_id, items_count 
     order by timestamp desc 
     
     ) as foo1
-where (sum_score - sum_score_old) <> 0 
+where (sum_cur_price - sum_cur_price_old) != 0
 limit %(limit)s;"""
 
 select_diff_by_action_id = """select 
-    new_livery.name as new_name,
-    old_livery.name as old_name,
-    new_livery.orig_price as new_orig_price,
-    new_livery.cur_price as new_cur_price,
-    old_livery.orig_price as old_orig_price,
-    old_livery.cur_price as old_cur_price,
-    new_livery.cur_price - old_livery.cur_price
+    coalesce(new_livery.name, 'Deleted Item') as "New Name",
+    coalesce(old_livery.name, 'New Item') as "Old Name",
+    new_livery.orig_price as "New Original Price",
+    new_livery.cur_price as "New Current Price",
+    old_livery.orig_price as "Old Original Price",
+    old_livery.cur_price as "Old Current Price",
+    new_livery.cur_price - old_livery.cur_price as "Current Price diff"
 from (
     select * 
     from livery 
@@ -66,4 +75,6 @@ full join
         from livery 
         where action_id = %(action_id)s - 1
     ) old_livery 
-on new_livery.name = old_livery.name;"""
+on new_livery.name = old_livery.name
+where (new_livery.cur_price - old_livery.cur_price) <> 0 or (new_livery.cur_price - old_livery.cur_price) is null
+order by new_livery.cur_price - old_livery.cur_price desc;"""

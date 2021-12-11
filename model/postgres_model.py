@@ -1,4 +1,3 @@
-import json
 import typing
 
 import psycopg2.extensions
@@ -46,20 +45,16 @@ class PostgresModel(AbstractModel):
         print(f'Connection to {self.db.dsn} closed successfully')
 
     @errors_catcher
-    def get_activity_changes(self, platform: str, leaderboard_type: str, limit: int, low_timestamp, high_timestamp)\
-            -> list:
+    def get_activity_changes(self, limit: int, low_timestamp, high_timestamp) -> list:
 
-        with self.db:
-            with self.db.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
-                cursor.execute(postgres_sql_requests.select_activity_pretty_names, {
-                    'LB_type': utils.LeaderboardTypes(leaderboard_type.lower()).value,
-                    'platform': utils.Platform(platform.upper()).value,
-                    'limit': limit,
-                    'high_timestamp': high_timestamp,
-                    'low_timestamp': low_timestamp
-                })
+        with self.db.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+            cursor.execute(postgres_sql_requests.select_activity_pretty_names, {
+                'limit': limit,
+                'high_timestamp': high_timestamp,
+                'low_timestamp': low_timestamp
+            })
 
-                result: list = cursor.fetchall()
+            result: list = cursor.fetchall()
 
         return result
 
@@ -92,7 +87,7 @@ class PostgresModel(AbstractModel):
         with self.db:
             with self.db.cursor() as cursor:
                 cursor.executemany(
-                    postgres_sql_requests.insert_leader_board,
+                    postgres_sql_requests.insert_livery,
                     livery_list)
 
     @errors_catcher
@@ -124,7 +119,7 @@ class PostgresModel(AbstractModel):
         with self.db:
             with self.db.cursor() as cursor:
                 cursor.executemany(
-                    postgres_sql_requests.insert_leader_board_timestamp,
+                    postgres_sql_requests.insert_livery_timestamp,
                     livery_list)
 
     @errors_catcher
@@ -137,9 +132,8 @@ class PostgresModel(AbstractModel):
         :return:
         """
 
-        with self.db:
-            with self.db.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
-                cursor.execute(postgres_sql_requests.select_diff_by_action_id, {'action_id': action_id})
-                result: list = cursor.fetchall()
+        with self.db.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+            cursor.execute(postgres_sql_requests.select_diff_by_action_id, {'action_id': action_id})
+            result: list = cursor.fetchall()
 
         return result

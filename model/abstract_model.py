@@ -21,5 +21,9 @@ class AbstractModel(abc.ABC):
         raise NotImplemented
 
     @abc.abstractmethod
+    def insert_livery_timestamp(self, livery_list: list) -> None:
+        raise NotImplemented
+
+    @abc.abstractmethod
     def get_diff_action_id(self, action_id: int) -> list:
         raise NotImplemented
