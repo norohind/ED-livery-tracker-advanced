@@ -79,8 +79,10 @@ class ActivityDiff:
 class ActivityDiffHtml:
     def on_get(self, req: falcon.request.Request, resp: falcon.response.Response, action_id: int) -> None:
         resp.content_type = falcon.MEDIA_HTML
-        resp.text = activity_table_html_template.replace(
-            '{items}', json.dumps(model.get_diff_action_id(action_id)))
+        resp.text = activity_table_html_template.\
+            replace('{items}', json.dumps(model.get_diff_action_id(action_id))).\
+            replace('{target_new_url}', '').\
+            replace('{target_column_name}', 'URL to image')
 
 
 app = falcon.App()
