@@ -34,7 +34,7 @@ class PostgresModel(AbstractModel):
             database=config.postgres_database_name,
             cursor_factory=psycopg2.extras.DictCursor)
 
-        print(f'Connected to {self.db.dsn}')
+        # print(f'Connected to {self.db.dsn}')
 
         with self.db:
             with self.db.cursor() as cursor:
@@ -42,7 +42,7 @@ class PostgresModel(AbstractModel):
 
     def close_model(self):
         self.db.close()
-        print(f'Connection to {self.db.dsn} closed successfully')
+        # print(f'Connection to {self.db.dsn} closed successfully')
 
     @errors_catcher
     def get_activity_changes(self, limit: int, low_timestamp, high_timestamp) -> list:

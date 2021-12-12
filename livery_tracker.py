@@ -100,7 +100,7 @@ def get_onlinestore_data() -> list[dict]:
     for item in requests.get("https://api.zaonce.net/3.0/store/product").json():
         items.append(dict(name=item["title"], cur_price=item["current_price"], orig_price=item["original_price"],
                           image=item["image"]))
-    print(f"Got {len(items)} items")
+    # print(f"Got {len(items)} items")
     return items
 
 
