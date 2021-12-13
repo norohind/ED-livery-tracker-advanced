@@ -59,7 +59,7 @@ class PostgresModel(AbstractModel):
         return result
 
     @errors_catcher
-    def insert_livery(self, livery_list: list) -> None:
+    def insert_livery(self, livery_list: list) -> int:
         """
         Takes livery content as list insert to DB
 
@@ -89,6 +89,8 @@ class PostgresModel(AbstractModel):
                 cursor.executemany(
                     postgres_sql_requests.insert_livery,
                     livery_list)
+
+        return action_id
 
     @errors_catcher
     def insert_livery_timestamp(self, livery_list: list) -> int:

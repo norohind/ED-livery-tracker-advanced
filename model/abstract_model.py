@@ -17,7 +17,7 @@ class AbstractModel(abc.ABC):
         raise NotImplemented
 
     @abc.abstractmethod
-    def insert_livery(self, livery_list: list) -> None:
+    def insert_livery(self, livery_list: list) -> int:
         raise NotImplemented
 
     @abc.abstractmethod
