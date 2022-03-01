@@ -122,6 +122,19 @@ def history_insert() -> None:
 discord_sender = NotifyDiscord(config.discord_webhooks)
 
 action_id_to_check: int = model.insert_livery(get_onlinestore_data())
-discord_sender.send(generate_notification_messages_for_discord(action_id_to_check))
+messages: list = generate_notification_messages_for_discord(action_id_to_check)
+
+if len(messages) >= 7:
+    """
+    If messages count too huge (we have experience when this script sent more than couple of hundreds messages), let's
+    send only first 7 messages and leave a reference link to this diff on web portal  
+    """
+
+    messages = messages[:7]
+    left_msg = len(messages) - 7
+    cliffhanger_message = f"And {left_msg} items more, view on <https://livery.demb.design/diff/{action_id_to_check}>"
+    messages.append(cliffhanger_message)
+
+discord_sender.send(messages)
 
 model.close_model()
