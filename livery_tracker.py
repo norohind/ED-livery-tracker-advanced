@@ -130,8 +130,8 @@ if len(messages) >= 7:
     send only first 7 messages and leave a reference link to this diff on web portal  
     """
 
-    messages = messages[:7]
     left_msg = len(messages) - 7
+    messages = messages[:7]
     cliffhanger_message = f"And {left_msg} items more, view on <https://livery.demb.design/diff/{action_id_to_check}>"
     messages.append(cliffhanger_message)
 
