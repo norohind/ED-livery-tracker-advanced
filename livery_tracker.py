@@ -29,7 +29,7 @@ New item: {entry['New Name']}
 \torig price: {entry['New Original Price']}
 ```
 link to item image: {entry['URL to image']}
-details about this change: <https://livery.demb.design/diff/{action_id}>"""
+details about this change: <https://livery.demb.uk/diff/{action_id}>"""
             messages.append(message)
 
         elif entry['New Name'] == 'Deleted Item':  # it is deleted from the store item
@@ -40,7 +40,7 @@ Last known prices:
 \torig_price: {entry['Old Original Price']}
 ```
 link to item image: {entry['URL to image']}
-details about this change: <https://livery.demb.design/diff/{action_id}>"""
+details about this change: <https://livery.demb.uk/diff/{action_id}>"""
             messages.append(message)
 
         elif (
@@ -53,7 +53,7 @@ Change price for known item: {entry['New Name']}
 \torig price: {entry['Old Original Price']} -> {entry['New Original Price']}
 ```
 link to item image: {entry['URL to image']}
-details about this change: <https://livery.demb.design/diff/{action_id}>"""
+details about this change: <https://livery.demb.uk/diff/{action_id}>"""
             messages.append(message)
 
     return messages
@@ -132,7 +132,7 @@ if len(messages) >= 7:
 
     left_msg = len(messages) - 7
     messages = messages[:7]
-    cliffhanger_message = f"And {left_msg} items more, view on <https://livery.demb.design/diff/{action_id_to_check}>"
+    cliffhanger_message = f"And {left_msg} items more, view on <https://livery.demb.uk/diff/{action_id_to_check}>"
     messages.append(cliffhanger_message)
 
 discord_sender.send(messages)
