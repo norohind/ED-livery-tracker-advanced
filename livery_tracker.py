@@ -83,7 +83,8 @@ class NotifyDiscord:
             r = requests.post(
                 _webhook_dict['url'],
                 data=f'content={requests.utils.quote(_message)}',
-                headers={'Content-Type': 'application/x-www-form-urlencoded'}
+                headers={'Content-Type': 'application/x-www-form-urlencoded'},
+                proxies={"https": "http://localhost:1080"}
             )
 
             _webhook_dict['last_send'] = time.time()  # shallow copy
